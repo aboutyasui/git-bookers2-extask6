@@ -1,0 +1,32 @@
+<% if user_signed_in? %>
+
+  <%= form_with url: search_path, method: :get, local: true do |f| %>
+    <%= f.text_field :content %>
+    <%= f.select :model, options_for_select({ "User" => "user", "Book" => "book" }) %>
+    <%= f.select :method, options_for_select({ "完全一致" => "perfect", "前方一致" => "forward", "後方一致" => "backward", "部分一致" => "partial" }) %>
+    <%= f.submit '検索' %>
+  <% end %>
+
+  <!--div class="search_form"-->
+    <!--%= form_with url: search_path, local: true, method: :get do |f| %-->
+    <!--「url: search_path」検索内容を、先ほど作成したルーティングに送信します。-->
+
+      <!--%= f.text_field :word %-->
+      <!--「f.text_field :word」検索内容を、wordとしてアクションに送っています-->
+
+      <!--%= f.select :range, options_for_select([['User'], ['Book']]) %-->
+      <!--f.select :range, options_for_select([['User'], ['Book']])  今回は複数のモデルを検索できるように実装する為、
+      __Userモデル__と__Bookモデル__を選択できるようにしています。
+      選択したモデルをrangeとしてアクションに送っています。-->
+
+
+      <!--%= f.select :search, options_for_select([["完全一致","perfect_match"], ["前方一致","forward_match"],  ["後方一致","backward_match"], ["部分一致","partial_match"]]) %-->
+      <!-- f.select :search, options_for_select([["完全一致","perfect_match"]以下略])
+      検索手法を定義しています。今回のようにカンマ区切りで複数定義することができます。
+      選択した検索手法をsearchとしてアクションに送っています。-->
+
+
+      <!--%= f.submit "検索", class: "btn btn-primary" %-->
+    <!--% end %-->
+  <!--/div-->
+<% end %>

@@ -28,22 +28,53 @@ class User < ApplicationRecord
   #re_relationﾃｰﾌﾞﾙ→userﾃｰﾌﾞﾙへfollower_idを持って来る
   has_many :followers, through: :reverse_of_relationships, source: :follower
 
-
+  #バリデーションの設定
   validates :name, length: { minimum: 2, maximum: 20 }, uniqueness: true
   validates :introduction, length: { maximum: 50 }
 
+ # ユーザーをフォローする
  def follow(user_id)
     relationships.create(followed_id: user_id)
  end
-
-  def unfollow(user_id)
+ # ユーザーのフォローを外す
+ def unfollow(user_id)
     relationships.find_by(followed_id: user_id).destroy
-  end
-
-  def following?(user)
+ end
+ # フォローしていればtrueを返す
+ def following?(user)
     followings.include?(user)
-  end
+ end
 
+
+ def self.search_for(content, method)
+    if method == 'perfect'
+      User.where(name: content)
+    elsif method == 'forward'
+      User.where('name LIKE ?', content + '%')
+    elsif method == 'backward'
+      User.where('name LIKE ?', '%' + content)
+    else
+      User.where('name LIKE ?', '%' + content + '%')
+    end
+ end
+
+ # 検索方法分岐
+  #def self.looks(search, word)
+    #送られてきたsearchによって条件分岐させましょう。
+    #if search == "perfect_match"#完全一致
+     # @user = User.where("name LIKE?", "#{word}")#whereメソッドを使いデータベースから該当データを取得し、変数に代入します。
+    #elsif search == "forward_match"#前方一致
+     # @user = User.where("name LIKE?","#{word}%")
+   # elsif search == "backward_match"#後方一致
+      #@user = User.where("name LIKE?","%#{word}")
+    #elsif search == "partial_match"#部分一致
+     # @user = User.where("name LIKE?","%#{word}%")
+      #完全一致以外の検索方法は、#{word}の前後(もしくは両方に)、__%__を追記することで定義することができます。
+   #else
+     # @user = User.all
+    #end
+    #nameは検索対象であるusersテーブル内のカラム名です→適宜、適したカラム名を指定しましょう。
+  #end
 
 def get_profile_image(width, height)
   unless profile_image.attached?

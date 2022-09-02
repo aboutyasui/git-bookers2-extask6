@@ -1,4 +1,5 @@
 class BooksController < ApplicationController
+  before_action :authenticate_user! #ユーザがログインしているかどうかを確認し、ログインしていない場合はユーザをログインページにリダイレクトする。
   before_action :correct_user, only: [:edit, :update, :destroy]
 
   def show
